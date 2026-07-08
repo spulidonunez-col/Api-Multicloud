@@ -1,0 +1,47 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+override.tf
+.terraform.lock.hcl
+
+# Secrets
+*.pem
+*.key
+*.crt
+.env
+.env.*
+secrets/
+credentials/
+**/service-account-key.json
+**/gcp-credentials.json
+**/aws-credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+.env
+venv/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+*.sqlite3
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Cloud
+**/.gcloud/
+**/.aws/
