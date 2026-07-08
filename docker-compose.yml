@@ -4,15 +4,15 @@ services:
   db:
     image: postgres:15-alpine
     environment:
-      POSTGRES_USER: linktic
-      POSTGRES_PASSWORD: linktic123
-      POSTGRES_DB: linkticdb
+      POSTGRES_USER: psqluser
+      POSTGRES_PASSWORD: Colombia2026
+      POSTGRES_DB: DemoApi
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U linktic"]
+      test: ["CMD-SHELL", "pg_isready -U psqluser"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +24,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://linktic:linktic123@db:5432/linkticdb
+      DATABASE_URL: postgresql://psqluser:Colombia2026@db:5432/DemoApi
       ENVIRONMENT: development
     depends_on:
       db:
