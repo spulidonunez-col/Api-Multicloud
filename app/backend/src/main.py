@@ -1,15 +1,15 @@
-from fastapi import FastAPI
+import os
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routes import items, health
-import os
+from routes import health, items
 
 # Crear tablas
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Linktic Multi-Cloud API", version="1.0.0")
+app = FastAPI(title="Demo Multi-Cloud API", version="1.0.0")
 
 # CORS
 app.add_middleware(
@@ -20,18 +20,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rutas
+# ========== FRONTEND ==========
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(BASE_DIR, "static")
+templates_dir = os.path.join(BASE_DIR, "templates")
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+templates = Jinja2Templates(directory=templates_dir)
+
+# ========== RUTAS ==========
 app.include_router(health.router)
 app.include_router(items.router)
 
-# Frontend (opcional - lo añadiremos después)
-# app.mount("/static", StaticFiles(directory="static"), name="static")
-# templates = Jinja2Templates(directory="templates")
-
+# ========== ROOT ==========
 @app.get("/")
-def root():
-    return {"message": "Linktic Multi-Cloud API", "status": "running"}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
