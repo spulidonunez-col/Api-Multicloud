@@ -11,12 +11,24 @@ resource "aws_vpc" "main" {
 
 resource "aws_subnet" "main" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = local.subnet_cidr
+  cidr_block              = local.subnet_a_cidr
   map_public_ip_on_launch = true
   availability_zone       = "${var.region}a"
   
   tags = {
-    Name = "${local.app_name}-subnet"
+    Name = "${local.app_name}-subnet-a"
+  }
+}
+
+# Agregar SEGUNDA SUBNET
+resource "aws_subnet" "secondary" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = local.subnet_b_cidr
+  map_public_ip_on_launch = true
+  availability_zone       = "${var.region}b"
+  
+  tags = {
+    Name = "${local.app_name}-subnet-b"
   }
 }
 
@@ -105,7 +117,7 @@ resource "aws_security_group" "db" {
 # ==================== RDS ====================
 resource "aws_db_subnet_group" "main" {
   name       = "${local.app_name}-db-subnet"
-  subnet_ids = [aws_subnet.main.id]
+  subnet_ids = [aws_subnet.main.id, aws_subnet.secondary.id]
   
   tags = {
     Name = "${local.app_name}-db-subnet"
