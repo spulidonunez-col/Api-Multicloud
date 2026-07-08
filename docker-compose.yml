@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: linktic
+      POSTGRES_PASSWORD: linktic123
+      POSTGRES_DB: linkticdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linktic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://linktic:linktic123@db:5432/linkticdb
+      ENVIRONMENT: development
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app/backend/src:/app/src
+      - ./app/frontend:/app/frontend
+
+volumes:
+  postgres_data:
