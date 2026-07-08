@@ -1,20 +1,15 @@
-output "ec2_public_ip" {
-  description = "Public IP of EC2 instance"
-  value       = aws_instance.main.public_ip
-}
-
-output "ec2_public_dns" {
-  description = "Public DNS of EC2 instance"
-  value       = aws_instance.main.public_dns
-}
-
-output "rds_address" {
-  description = "RDS instance address"
+output "rds_endpoint" {
+  description = "Endpoint de RDS"
   value       = aws_db_instance.main.address
-  sensitive   = true
 }
 
-output "ecr_repository_url" {
-  description = "ECR repository URL"
-  value       = aws_ecr_repository.main.repository_url
+output "rds_port" {
+  description = "Puerto de RDS"
+  value       = aws_db_instance.main.port
+}
+
+output "secret_arn" {
+  description = "ARN del secret en Secrets Manager"
+  value       = aws_secretsmanager_secret.db_password.arn
+  sensitive   = true
 }

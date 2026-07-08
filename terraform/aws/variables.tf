@@ -1,17 +1,17 @@
 variable "region" {
-  description = "AWS Region"
+  description = "Región de AWS"
   type        = string
-  default     = "us-east-1"
+  default     = "us-west-2"
+}
+
+variable "app_name" {
+  description = "Nombre base de la aplicación"
+  type        = string
+  default     = "aws-mcapp"
 }
 
 variable "db_password" {
-  description = "PostgreSQL password"
+  description = "Contraseña para RDS"
   type        = string
   sensitive   = true
-}
-
-variable "service_name" {
-  description = "Service name"
-  type        = string
-  default     = "aws-demo-api"
 }

@@ -18,5 +18,5 @@ variable "db_password" {
 variable "service_name" {
   description = "Cloud Run service name"
   type        = string
-  default     = "gcp-demo-api"
+  default     = "gcp-mcapp"
 }
