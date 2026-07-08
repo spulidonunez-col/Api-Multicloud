@@ -35,14 +35,14 @@ jobs:
 
       - name: Build and Push Image
         run: |
-          IMAGE="${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ar-gcp-app/gcp-demo-api:${{ github.sha }}"
+          IMAGE="${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gcp-mcapp-repo/gcp-mcapp-api:${{ github.sha }}"
           docker build -t $IMAGE -f app/backend/Dockerfile app/backend
           docker push $IMAGE
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy linktic-api \
-            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ar-gcp-app/gcp-demo-api:${{ github.sha }} \
+          gcloud run deploy gcp-mcapp-api \
+            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gcp-mcapp-repo/gcp-mcapp-api:${{ github.sha }} \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \

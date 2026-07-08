@@ -26,7 +26,8 @@ resource "google_compute_subnetwork" "main" {
 resource "google_vpc_access_connector" "main" {
   provider = google-beta
 
-  name          = local.vpc_connector_name
+  # name          = local.vpc_connector_name
+  name = "${local.app_name}-vcon"
   region        = var.region
   project       = var.project_id
   network       = google_compute_network.main.name
