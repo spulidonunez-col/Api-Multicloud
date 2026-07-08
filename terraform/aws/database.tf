@@ -67,5 +67,6 @@ resource "aws_db_instance" "main" {
     Name = local.db_instance_name
   }
 
-  depends_on = [aws_db_subnet_group.main]
+  depends_on = [aws_db_subnet_group.main,aws_security_group.api_sg]
+
 }
