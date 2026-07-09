@@ -7,6 +7,13 @@ on:
       - 'app/**'
       - 'terraform/aws/**'
 
+env:
+  APP_NAME: aws-mcapp
+  REGION: us-west-2
+  REPO_NAME: aws-mcapp-repo
+  SERVICE_NAME: aws-mcapp-api
+  CLUSTER_NAME: aws-mcapp-cluster
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,7 +27,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -28,20 +35,13 @@ jobs:
 
       - name: Build and Push Image
         run: |
-          IMAGE="${{ steps.login-ecr.outputs.registry }}/ecr-aws-app:latest"
+          IMAGE="${{ steps.login-ecr.outputs.registry }}/${{ env.REPO_NAME }}:${{ github.sha }}"
           docker build -t $IMAGE -f app/backend/Dockerfile app/backend
           docker push $IMAGE
 
-      - name: Deploy to EC2
+      - name: Update ECS Service
         run: |
-          aws ec2 run-instances \
-            --image-id ami-0c7217cdde317cfec \
-            --instance-type t3.micro \
-            --key-name linktic-key \
-            --security-group-ids sg-xxxxx \
-            --subnet-id subnet-xxxxx \
-            --user-data "#!/bin/bash
-              docker pull ${{ steps.login-ecr.outputs.registry }}/ecr-aws-app:latest
-              docker run -d -p 8000:8000 \
-                -e DATABASE_URL=${{ secrets.AWS_DB_URL }} \
-                ${{ steps.login-ecr.outputs.registry }}/ecr-aws-app:latest"
+          aws ecs update-service --cluster ${{ env.CLUSTER_NAME }} \
+            --service ${{ env.SERVICE_NAME }} \
+            --force-new-deployment \
+            --region ${{ env.REGION }}

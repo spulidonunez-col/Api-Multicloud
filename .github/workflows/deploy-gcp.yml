@@ -7,6 +7,13 @@ on:
       - 'app/**'
       - 'terraform/gcp/**'
 
+env:
+  APP_NAME: gcp-mcapp
+  REGION: us-central1
+  PROJECT_ID: gcp-msapp
+  REPO_NAME: gcp-mcapp-repo
+  SERVICE_NAME: gcp-mcapp-api
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -31,21 +38,21 @@ jobs:
 
       - name: Configure Docker
         run: |
-          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
       - name: Build and Push Image
         run: |
-          IMAGE="${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gcp-mcapp-repo/gcp-mcapp-api:${{ github.sha }}"
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
           docker build -t $IMAGE -f app/backend/Dockerfile app/backend
           docker push $IMAGE
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy gcp-mcapp-api \
-            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gcp-mcapp-repo/gcp-mcapp-api:${{ github.sha }} \
-            --region ${{ secrets.GCP_REGION }} \
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
             --memory 512Mi \
             --cpu 1 \
-            --set-env-vars "DATABASE_URL=postgresql://psqluser:Colombia2026@${{ secrets.DB_PUBLIC_IP }}:5432/DemoApi"
+            --set-env-vars "DATABASE_URL=postgresql://psqluser:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_PUBLIC_IP }}:5432/DemoApi"

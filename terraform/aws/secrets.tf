@@ -2,9 +2,10 @@
 resource "aws_secretsmanager_secret" "db_password" {
   name = "${local.app_name}-db-password"
   description = "Contraseña para RDS"
+  recovery_window_in_days = 0
 
   tags = {
-    Name = "${local.app_name}-db-password"
+    Name = "${local.app_name}-db-password"   
   }
 }
 
