@@ -20,3 +20,9 @@ variable "service_name" {
   type        = string
   default     = "gcp-mcapp"
 }
+
+variable "service_account_email" {
+  description = "Email de la Service Account de Terraform"
+  type        = string
+  default     = "sa-tf-user@gcp-msapp.iam.gserviceaccount.com"
+}
