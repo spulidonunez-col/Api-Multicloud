@@ -43,8 +43,13 @@ jobs:
       - name: Build and Push Image
         run: |
           IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          LATEST_IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:latest"
+          
           docker build -t $IMAGE -f app/backend/Dockerfile app/backend
+          docker tag $IMAGE $LATEST_IMAGE
+          
           docker push $IMAGE
+          docker push $LATEST_IMAGE
 
       - name: Deploy to Cloud Run
         run: |
