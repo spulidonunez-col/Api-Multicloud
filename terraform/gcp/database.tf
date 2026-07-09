@@ -18,7 +18,7 @@ resource "google_sql_database_instance" "main" {
     # Configuración de red: IP PRIVADA (no pública)
     ip_configuration {
       ipv4_enabled    = false
-      private_network = "projects/${var.project_id}/global/networks/default"
+      private_network = "projects/${var.project_id}/global/networks/${local.vpc_name}"
     }
 
     # Backup automático (retención 7 días)
