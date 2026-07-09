@@ -1,10 +1,16 @@
 import os
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from routes import health, items
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))  # Usa PORT si existe, sino 8000
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
 
 # Crear tablas
 Base.metadata.create_all(bind=engine)
