@@ -7,6 +7,8 @@ resource "google_sql_database_instance" "main" {
   region           = var.region
   project          = var.project_id
 
+  deletion_protection = false
+
   settings {
     tier              = local.db_tier
     disk_size         = local.db_disk_size
