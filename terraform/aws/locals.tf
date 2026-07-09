@@ -1,7 +1,4 @@
-# =============================================
-# locals.tf
-# Valores fijos para AWS
-# =============================================
+#Variables locales del proyecto
 
 locals {
   app_name = var.app_name
@@ -27,7 +24,7 @@ locals {
   db_disk_size     = 20
   db_engine        = "postgres"
   db_engine_version = "15"
-
+  
   # ===== ECS FARGATE =====
   service_name     = "${local.app_name}-api"
   task_family      = "${local.app_name}-task"
@@ -41,4 +38,5 @@ locals {
   # ===== ALB =====
   alb_name = "${local.app_name}-alb"
   tg_name  = "${local.app_name}-tg"
+  
 }

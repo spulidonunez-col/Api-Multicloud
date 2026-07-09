@@ -163,6 +163,10 @@ resource "aws_ecs_task_definition" "main" {
         {
           name  = "DATABASE_USER"
           value = local.db_user
+        },
+        {
+          name  = "DATABASE_URL"
+          value = "postgresql://${local.db_user}:${var.db_password}@${aws_db_instance.main.address}/${local.db_name}"
         }
       ]
       secrets = [
