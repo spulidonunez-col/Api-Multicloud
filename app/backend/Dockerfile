@@ -15,8 +15,10 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 # ========== COPIAR CÓDIGO FUENTE ==========
 COPY src/ ./src/
-COPY frontend/ ./src/frontend/
-RUN mv src/frontend/static src/ && mv src/frontend/templates src/
+
+RUN chown -R appuser:appgroup /app
+USER appuser
+
 
 RUN chown -R appuser:appgroup /app
 USER appuser
