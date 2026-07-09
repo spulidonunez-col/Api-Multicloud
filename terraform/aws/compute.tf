@@ -78,7 +78,6 @@ resource "aws_iam_role_policy_attachment" "ecs_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# 3b. IAM Role para la tarea (permisos para Secrets Manager)
 resource "aws_iam_role" "ecs_task" {
   name = "${local.app_name}-ecs-task-role"
 
@@ -115,7 +114,7 @@ resource "aws_iam_role_policy" "secrets_access" {
     ]
   })
 }
-##
+
 resource "aws_cloudwatch_log_group" "ecs" {
   name = "/ecs/${local.app_name}"
   retention_in_days = 7
@@ -124,8 +123,7 @@ resource "aws_cloudwatch_log_group" "ecs" {
     Name = "/ecs/${local.app_name}"
   }
 }
-##
-# Task Definition (Fargate)
+
 resource "aws_ecs_task_definition" "main" {
   family                   = local.task_family
   network_mode             = "awsvpc"
