@@ -2,7 +2,6 @@
 # gateway.tf - Global Load Balancer (GCLB)
 # =============================================
 
-# 1. Health Check para Cloud Run
 resource "google_compute_health_check" "cloud_run" {
   provider = google-beta
 
@@ -18,7 +17,7 @@ resource "google_compute_health_check" "cloud_run" {
   }
 }
 
-# 2. Network Endpoint Group (NEG) serverless para Cloud Run
+
 resource "google_compute_region_network_endpoint_group" "cloud_run_neg" {
   provider = google-beta
 
@@ -32,7 +31,6 @@ resource "google_compute_region_network_endpoint_group" "cloud_run_neg" {
   }
 }
 
-# 3. Backend Service que usa el NEG
 resource "google_compute_backend_service" "cloud_run" {
   provider = google-beta
 
@@ -40,9 +38,6 @@ resource "google_compute_backend_service" "cloud_run" {
   project     = var.project_id
   protocol    = "HTTP"
   port_name   = "http"
-  #timeout_sec = 60
-
-  #health_checks = [google_compute_health_check.cloud_run.id]
 
   backend {
     group = google_compute_region_network_endpoint_group.cloud_run_neg.id
@@ -59,14 +54,12 @@ resource "google_compute_backend_service" "cloud_run" {
   ]
 }
 
-# 4. Dirección IP global
 resource "google_compute_global_address" "main" {
   name       = "${local.app_name}-ip"
   project    = var.project_id
   ip_version = "IPV4"
 }
 
-# 5. URL Map (enrutamiento por path)
 resource "google_compute_url_map" "main" {
   provider = google-beta
 
@@ -101,7 +94,6 @@ resource "google_compute_url_map" "main" {
   }
 }
 
-# 6. Target HTTP Proxy (sin SSL)
 resource "google_compute_target_http_proxy" "main" {
   provider = google-beta
 
@@ -110,7 +102,6 @@ resource "google_compute_target_http_proxy" "main" {
   url_map = google_compute_url_map.main.id
 }
 
-# 7. Global Forwarding Rule (HTTP - puerto 80)
 resource "google_compute_global_forwarding_rule" "main" {
   provider = google-beta
 
