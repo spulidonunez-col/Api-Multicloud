@@ -168,7 +168,7 @@ resource "aws_ecs_task_definition" "main" {
       secrets = [
         {
           name      = "DATABASE_PASSWORD"
-          valueFrom = "${aws_secretsmanager_secret.db_password.arn}:password::"
+          valueFrom = aws_secretsmanager_secret.db_password.arn
         }
       ]
       logConfiguration = {
